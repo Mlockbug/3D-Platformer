@@ -13486,12 +13486,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSpeed: 500
+  normalSpeed: 500
+  sprintSpeed: 750
+  crouchSpeed: 350
   mazeCam: {fileID: 1614219991}
   groundChecker: {fileID: 1007558411}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
   jumpForce: 300
+  maxSprint: 5
 --- !u!54 &1982445561
 Rigidbody:
   m_ObjectHideFlags: 0

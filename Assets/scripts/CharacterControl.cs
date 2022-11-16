@@ -5,7 +5,10 @@ using UnityEngine;
 public class CharacterControl : MonoBehaviour
 {
     // Start is called before the first frame update
-    public float maxSpeed = 3.0f;
+    public float maxSpeed;
+    public float normalSpeed = 500f;
+    public float sprintSpeed = 750f;
+    public float crouchSpeed = 350f;
     float rotation = 0.0f;
     float camRotation = 0.0f;
     float rotationSpeed = 2.0f;
@@ -18,11 +21,16 @@ public class CharacterControl : MonoBehaviour
     bool isOnGround;
     public GameObject groundChecker;
     public LayerMask groundLayer;
-    public float jumpForce = 300.0f;
+    public float jumpForce = 300f;
+    public float maxSprint = 5f;
+    float sprintTimer;
     void Start()
     {
+        Cursor.lockState = CursorLockMode.Locked;
         cam = GameObject.Find("Main Camera");
         rb = GetComponent<Rigidbody>();
+        maxSpeed = normalSpeed;
+        sprintTimer = maxSprint;
     }
 
     // Update is called once per frame
@@ -43,6 +51,30 @@ public class CharacterControl : MonoBehaviour
                 cam.transform.localRotation = Quaternion.Euler(new Vector3(camRotation, 0.0f, 0.0f));
             }
 
+            if (Input.GetKey(KeyCode.LeftShift) && sprintTimer>0f)
+            {
+                maxSpeed = sprintSpeed;
+                sprintTimer = sprintTimer - Time.deltaTime;
+            }
+            else
+            {
+                maxSpeed = normalSpeed;
+                if (!(Input.GetKey(KeyCode.LeftShift)))
+                {
+                    sprintTimer = sprintTimer + Time.deltaTime;
+                }
+            }
+            sprintTimer = Mathf.Clamp(sprintTimer, 0.0f, maxSprint);
+
+            if (Input.GetKey(KeyCode.LeftControl))
+            {
+                maxSpeed = crouchSpeed;
+                transform.localScale = new Vector3(1f,0.5f,1f);
+            }
+            else
+            {
+                transform.localScale = new Vector3(1f, 1f, 1f);
+            }
             if (isOnGround && Input.GetKeyDown(KeyCode.Space))
 			{
                 rb.AddForce(transform.up * jumpForce);
