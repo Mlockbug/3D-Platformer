@@ -14,6 +14,11 @@ public class CharacterControl : MonoBehaviour
     public GameObject mazeCam;
     bool wantToRotate = true;
     Rigidbody rb;
+    Vector3 newVelocity;
+    bool isOnGround;
+    public GameObject groundChecker;
+    public LayerMask groundLayer;
+    public float jumpForce = 300.0f;
     void Start()
     {
         cam = GameObject.Find("Main Camera");
@@ -27,13 +32,9 @@ public class CharacterControl : MonoBehaviour
         {
             //transform.position += ((transform.forward * Input.GetAxis("Vertical")) + (transform.right * Input.GetAxis("Horizontal"))) * maxSpeed * Time.deltaTime;
 
-            Vector3 newVelocity = ((transform.forward * Input.GetAxis("Vertical")) + (transform.right * Input.GetAxis("Horizontal"))) * maxSpeed;
-            rb.velocity = new Vector3(newVelocity.x, rb.velocity.y, newVelocity.z);
+            isOnGround = Physics.CheckSphere(groundChecker.transform.position, 0.1f, groundLayer);
+            newVelocity = ((transform.forward * Input.GetAxis("Vertical")) + (transform.right * Input.GetAxis("Horizontal")));
 
-            if (rb.velocity != new Vector3(0f,0f,0f))
-			{
-                Debug.Log("E");
-			}
             if (wantToRotate)
             {
                 rotation += Input.GetAxis("Mouse X") * rotationSpeed;
@@ -41,6 +42,11 @@ public class CharacterControl : MonoBehaviour
                 camRotation += Input.GetAxis("Mouse Y") * camRotationSpeed * -1;
                 cam.transform.localRotation = Quaternion.Euler(new Vector3(camRotation, 0.0f, 0.0f));
             }
+
+            if (isOnGround && Input.GetKeyDown(KeyCode.Space))
+			{
+                rb.AddForce(transform.up * jumpForce);
+			}
 
             if (Input.GetKeyDown(KeyCode.E))
             {
@@ -51,7 +57,14 @@ public class CharacterControl : MonoBehaviour
             }
         }
 
+        // will import these to make camera transition smooth if i have extra time
+
         //cam.transform.position = Vector3.Lerp(cam.transform.position, mazeCam.transform.position, Time.deltaTime);
         //cam.transform.rotation = Quaternion.Lerp(cam.transform.rotation, mazeCam.transform.rotation, Time.deltaTime);
+    }
+
+	private void FixedUpdate()
+	{
+        rb.velocity = new Vector3(newVelocity.x * maxSpeed * Time.fixedDeltaTime, rb.velocity.y, newVelocity.z * maxSpeed * Time.fixedDeltaTime) ;
     }
 }
