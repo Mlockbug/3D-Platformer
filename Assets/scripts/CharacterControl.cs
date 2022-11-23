@@ -80,13 +80,13 @@ public class CharacterControl : MonoBehaviour
                 rb.AddForce(transform.up * jumpForce);
 			}
 
-            if (Input.GetKeyDown(KeyCode.E))
+            /*if (Input.GetKeyDown(KeyCode.E))
             {
                 cam.SetActive(!(cam.activeInHierarchy));
                 mazeCam.SetActive(!(cam.activeInHierarchy));
                 transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
                 wantToRotate = !wantToRotate;
-            }
+            }*/
         }
 
         // will import these to make camera transition smooth if i have extra time
@@ -99,4 +99,23 @@ public class CharacterControl : MonoBehaviour
 	{
         rb.velocity = new Vector3(newVelocity.x * maxSpeed * Time.fixedDeltaTime, rb.velocity.y, newVelocity.z * maxSpeed * Time.fixedDeltaTime) ;
     }
+
+    void OnTriggerEnter(Collider other)
+	{
+        switch (other.tag)
+        {
+            case "cam orth":
+                cam.SetActive(false);
+                mazeCam.SetActive(true);
+                transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
+                wantToRotate = false;
+                break;
+            case "cam pers":
+                cam.SetActive(true);
+                mazeCam.SetActive(false);
+                wantToRotate = true;
+                break;
+
+        }
+	}
 }

@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - cam orth
+  - cam pers
   layers:
   - Default
   - TransparentFX

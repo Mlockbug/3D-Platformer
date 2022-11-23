@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SpotlightCode : MonoBehaviour
 {
+    public Transform player;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -14,5 +16,6 @@ public class SpotlightCode : MonoBehaviour
     void Update()
     {
         
+        transform.LookAt(player);
     }
 }
