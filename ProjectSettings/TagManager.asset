@@ -6,6 +6,11 @@ TagManager:
   tags:
   - cam orth
   - cam pers
+  - respawn
+  - speed cube
+  - collectable speed
+  - collectable maze
+  - collectable parkour
   layers:
   - Default
   - TransparentFX

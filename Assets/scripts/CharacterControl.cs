@@ -24,6 +24,13 @@ public class CharacterControl : MonoBehaviour
     public float jumpForce = 300f;
     public float maxSprint = 5f;
     float sprintTimer;
+    bool inMaze = false;
+    int speedCubes = 0;
+    public GameObject collectableSpeed;
+    bool mazeCollected = false;
+    bool speedCollected = false;
+    bool parkourCollected = false;
+    Vector3 respawnPoint = new Vector3(180f, 133f, 153f);
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -80,6 +87,26 @@ public class CharacterControl : MonoBehaviour
                 rb.AddForce(transform.up * jumpForce);
 			}
 
+            if (inMaze)
+			{
+                cam.SetActive(false);
+                mazeCam.SetActive(true);
+                wantToRotate = false;
+                transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
+            }
+			else
+			{
+                cam.SetActive(true);
+                mazeCam.SetActive(false);
+                wantToRotate = true;
+            }
+
+            if  (speedCubes == 7)
+			{
+                collectableSpeed.SetActive(true);
+                speedCubes = 0;
+			}
+
             /*if (Input.GetKeyDown(KeyCode.E))
             {
                 cam.SetActive(!(cam.activeInHierarchy));
@@ -105,17 +132,36 @@ public class CharacterControl : MonoBehaviour
         switch (other.tag)
         {
             case "cam orth":
-                cam.SetActive(false);
-                mazeCam.SetActive(true);
-                transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
-                wantToRotate = false;
+                inMaze = true;
                 break;
-            case "cam pers":
-                cam.SetActive(true);
-                mazeCam.SetActive(false);
-                wantToRotate = true;
+            case "respawn":
+                transform.position = respawnPoint;
+                break;
+            case "speed cube":
+                Destroy(other.gameObject);
+                speedCubes++;
+                break;
+            case "collectable speed":
+                speedCollected = true;
+                Destroy(other.gameObject);
+                break;
+            case "collectable maze":
+                mazeCollected = true;
+                Destroy(other.gameObject);
+                break;
+            case "collectable parkour":
+                parkourCollected = true;
+                Destroy(other.gameObject);
                 break;
 
         }
+	}
+
+	private void OnTriggerExit(Collider other)
+	{
+		if (other.tag == "cam orth")
+		{
+            inMaze = false;
+		}
 	}
 }
