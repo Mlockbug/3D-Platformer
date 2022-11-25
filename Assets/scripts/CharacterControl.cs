@@ -15,6 +15,7 @@ public class CharacterControl : MonoBehaviour
     float camRotationSpeed = 1.5f;
     GameObject cam;
     public GameObject mazeCam;
+    public GameObject mazeCamWaypoint;
     bool wantToRotate = true;
     Rigidbody rb;
     Vector3 newVelocity;
@@ -89,10 +90,19 @@ public class CharacterControl : MonoBehaviour
 
             if (inMaze)
 			{
-                cam.SetActive(false);
-                mazeCam.SetActive(true);
+
+                //mazeCam.SetActive(true);
+                //mazeCam.transform.position = cam.transform.position;
+                cam.transform.position = Vector3.Lerp(cam.transform.position, mazeCamWaypoint.transform.position, Time.deltaTime);
+                cam.transform.rotation = Quaternion.Lerp(cam.transform.rotation, mazeCamWaypoint.transform.rotation, Time.deltaTime);
+                //cam.SetActive(false);
                 wantToRotate = false;
                 transform.rotation = Quaternion.Euler(new Vector3(0.0f, 90.0f, 0.0f));
+                while (inMaze)
+				{
+                    cam.transform.position = mazeCamWaypoint.transform.position;
+                    cam.transform.rotation = mazeCamWaypoint.transform.rotation;
+                }
             }
 			else
 			{
@@ -118,8 +128,7 @@ public class CharacterControl : MonoBehaviour
 
         // will import these to make camera transition smooth if i have extra time
 
-        //cam.transform.position = Vector3.Lerp(cam.transform.position, mazeCam.transform.position, Time.deltaTime);
-        //cam.transform.rotation = Quaternion.Lerp(cam.transform.rotation, mazeCam.transform.rotation, Time.deltaTime);
+
     }
 
 	private void FixedUpdate()
