@@ -9,7 +9,7 @@ public class CharacterControl : MonoBehaviour
     public float normalSpeed = 500f;
     public float sprintSpeed = 750f;
     public float crouchSpeed = 350f;
-    float rotation = 0.0f;
+    float rotation = -90.0f;
     float camRotation = 0.0f;
     float rotationSpeed = 2.0f;
     float camRotationSpeed = 1.5f;
@@ -34,9 +34,13 @@ public class CharacterControl : MonoBehaviour
     bool parkourCollected = false;
     Vector3 respawnPoint = new Vector3(180f, 133f, 153f);
     public GameObject endDoor;
+    public bool playingGame = false;
+    public GameObject mainMenuScreen;
+    public GameObject pauseMenuScreen;
+    public GameObject winMenuScreen;
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        
         cam = GameObject.Find("Main Camera");
         rb = GetComponent<Rigidbody>();
         maxSpeed = normalSpeed;
@@ -46,8 +50,10 @@ public class CharacterControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (true)
+        if (playingGame)
         {
+            Cursor.lockState = CursorLockMode.Locked;
+            mainMenuScreen.SetActive(false);
             //transform.position += ((transform.forward * Input.GetAxis("Vertical")) + (transform.right * Input.GetAxis("Horizontal"))) * maxSpeed * Time.deltaTime;
 
             //camWaypoint.transform.position = cam.transform.position;
@@ -190,5 +196,10 @@ public class CharacterControl : MonoBehaviour
 		{
             inMaze = false;
 		}
+	}
+
+    public void PressedPlay()
+	{
+        playingGame = true;
 	}
 }
