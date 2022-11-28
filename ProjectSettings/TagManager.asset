@@ -11,6 +11,8 @@ TagManager:
   - collectable speed
   - collectable maze
   - collectable parkour
+  - deactivated door
+  - activated door
   layers:
   - Default
   - TransparentFX
