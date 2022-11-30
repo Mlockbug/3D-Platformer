@@ -38,6 +38,9 @@ public class CharacterControl : MonoBehaviour
     public GameObject mainMenuScreen;
     public GameObject pauseMenuScreen;
     public GameObject winMenuScreen;
+    public Animator anim;
+    bool sprinting;
+    bool jumping;
     void Start()
     {
         
@@ -52,6 +55,11 @@ public class CharacterControl : MonoBehaviour
     {
         if (playingGame)
         {
+            anim.SetFloat("speed", newVelocity.magnitude);
+            anim.SetBool("sprint", sprinting);
+            anim.SetFloat("velocity_y", rb.velocity.y);
+            anim.SetBool("jumping", jumping);
+
             Cursor.lockState = CursorLockMode.Locked;
             mainMenuScreen.SetActive(false);
             //transform.position += ((transform.forward * Input.GetAxis("Vertical")) + (transform.right * Input.GetAxis("Horizontal"))) * maxSpeed * Time.deltaTime;
@@ -73,11 +81,13 @@ public class CharacterControl : MonoBehaviour
 
             if (Input.GetKey(KeyCode.LeftShift) && sprintTimer>0f)
             {
+                sprinting = true;
                 maxSpeed = sprintSpeed;
                 sprintTimer = sprintTimer - Time.deltaTime;
             }
             else
             {
+                sprinting = false;
                 maxSpeed = normalSpeed;
                 if (!(Input.GetKey(KeyCode.LeftShift)))
                 {
@@ -86,7 +96,7 @@ public class CharacterControl : MonoBehaviour
             }
             sprintTimer = Mathf.Clamp(sprintTimer, 0.0f, maxSprint);
 
-            if (Input.GetKey(KeyCode.LeftControl))
+            /*if (Input.GetKey(KeyCode.LeftControl))
             {
                 maxSpeed = crouchSpeed;
                 transform.localScale = new Vector3(1f,0.5f,1f);
@@ -94,10 +104,16 @@ public class CharacterControl : MonoBehaviour
             else
             {
                 transform.localScale = new Vector3(1f, 1f, 1f);
-            }
+            }*/
+
             if (isOnGround && Input.GetKeyDown(KeyCode.Space))
 			{
+                jumping = true;
                 rb.AddForce(transform.up * jumpForce);
+			}
+			else
+			{
+                jumping = false;
 			}
 
             if (inMaze)
@@ -185,6 +201,12 @@ public class CharacterControl : MonoBehaviour
             case "collectable parkour":
                 parkourCollected = true;
                 Destroy(other.gameObject);
+                break;
+            case "activated door":
+                winMenuScreen.SetActive(true);
+                playingGame = false;
+                Cursor.lockState = CursorLockMode.Confined;
+                newVelocity = Vector3.zero;
                 break;
 
         }
