@@ -59,6 +59,7 @@ public class CharacterControl : MonoBehaviour
             anim.SetBool("sprint", sprinting);
             anim.SetFloat("velocity_y", rb.velocity.y);
             anim.SetBool("jumping", jumping);
+            anim.SetBool("isOnGround", isOnGround);
 
             Cursor.lockState = CursorLockMode.Locked;
             mainMenuScreen.SetActive(false);
@@ -69,6 +70,11 @@ public class CharacterControl : MonoBehaviour
 
             isOnGround = Physics.CheckSphere(groundChecker.transform.position, 0.1f, groundLayer);
             newVelocity = ((transform.forward * Input.GetAxis("Vertical")) + (transform.right * Input.GetAxis("Horizontal")));
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+			{
+                pauseMenuScreen.SetActive(true);
+			}
 
             if (wantToRotate)
             {
@@ -109,6 +115,7 @@ public class CharacterControl : MonoBehaviour
             if (isOnGround && Input.GetKeyDown(KeyCode.Space))
 			{
                 jumping = true;
+                anim.Play("jump up", 0, 0.4f);
                 rb.AddForce(transform.up * jumpForce);
 			}
 			else

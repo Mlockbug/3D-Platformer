@@ -23,4 +23,9 @@ public class MenuLogic : MonoBehaviour
 	{
         player.GetComponent<CharacterControl>().PressedPlay();
 	}
+
+	public void Quit()
+	{
+        Application.Quit();
+	}
 }
