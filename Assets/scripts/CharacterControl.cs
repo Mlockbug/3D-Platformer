@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CharacterControl : MonoBehaviour
 {
@@ -41,6 +42,8 @@ public class CharacterControl : MonoBehaviour
     public Animator anim;
     bool sprinting;
     bool jumping;
+    float timer = 0f;
+    public Text timeTaken; 
     void Start()
     {
         
@@ -55,6 +58,9 @@ public class CharacterControl : MonoBehaviour
     {
         if (playingGame)
         {
+            timeTaken.gameObject.SetActive(true);
+            timer += Time.deltaTime;
+            timeTaken.text = timer.ToString("F2");
             anim.SetFloat("speed", newVelocity.magnitude);
             anim.SetBool("sprint", sprinting);
             anim.SetFloat("velocity_y", rb.velocity.y);
@@ -71,10 +77,7 @@ public class CharacterControl : MonoBehaviour
             isOnGround = Physics.CheckSphere(groundChecker.transform.position, 0.1f, groundLayer);
             newVelocity = ((transform.forward * Input.GetAxis("Vertical")) + (transform.right * Input.GetAxis("Horizontal")));
 
-            if (Input.GetKeyDown(KeyCode.Escape))
-			{
-                pauseMenuScreen.SetActive(true);
-			}
+
 
             if (wantToRotate)
             {
@@ -173,6 +176,13 @@ public class CharacterControl : MonoBehaviour
             {
                 endDoor.transform.position = Vector3.Lerp(endDoor.transform.position, new Vector3(205.71f, 127.37f, 141.38f), Time.deltaTime);
                 endDoor.tag = "deactivated door";
+            }
+
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                pauseMenuScreen.SetActive(true);
+                playingGame = false;
+                Cursor.lockState = CursorLockMode.Confined;
             }
 
         }
