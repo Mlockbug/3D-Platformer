@@ -5,25 +5,31 @@ using UnityEngine.SceneManagement;
 
 public class MenuLogic : MonoBehaviour
 {
-    public GameObject player;
+    GameObject player;
+    bool retry;
     // Start is called before the first frame update
     void Start()
     {
-        
+        player = GameObject.Find("player");
+        if (retry)
+        {
+            Play();
+            retry = false;
+            Destroy(gameObject);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void Retry()
     {
         DontDestroyOnLoad(this);
+        retry = true;
         SceneManager.LoadScene(0);
-        Play();
-        Destroy(gameObject);
     }
 
     public void Play()
