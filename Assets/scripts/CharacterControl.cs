@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 public class CharacterControl : MonoBehaviour
 {
@@ -43,10 +45,27 @@ public class CharacterControl : MonoBehaviour
     bool sprinting;
     bool jumping;
     float timer = 0f;
-    public Text timeTaken; 
+    public Text timeTaken;
+    public Text highScore;
+    public Text yourScore;
+    public Text newHighScore;
+    float bestTime;
     void Start()
     {
-        
+        if (File.Exists(Application.persistentDataPath + "/MySaveData.dat"))
+		{
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(Application.persistentDataPath + "/MySaveData.dat", FileMode.Open);
+            SaveLoadGame data = (SaveLoadGame)bf.Deserialize(file);
+            file.Close();
+
+            bestTime = data.currentHighScore;
+		}
+        else
+		{
+            bestTime = 0f;
+		}
+
         cam = GameObject.Find("Main Camera");
         rb = GetComponent<Rigidbody>();
         maxSpeed = normalSpeed;
@@ -58,6 +77,7 @@ public class CharacterControl : MonoBehaviour
     {
         if (playingGame)
         {
+            pauseMenuScreen.SetActive(false);
             timeTaken.gameObject.SetActive(true);
             timer += Time.deltaTime;
             timeTaken.text = timer.ToString("F2");
@@ -222,6 +242,14 @@ public class CharacterControl : MonoBehaviour
             case "activated door":
                 winMenuScreen.SetActive(true);
                 playingGame = false;
+                timeTaken.gameObject.SetActive(false);
+                if (bestTime > timer || bestTime == 0f)
+                {
+                    newHighScore.gameObject.SetActive(true);
+                    bestTime = timer;
+                }
+                yourScore.text = "Your time: " + timer.ToString("F2");
+                highScore.text = "Best time: " + bestTime.ToString("F2");
                 Cursor.lockState = CursorLockMode.Confined;
                 newVelocity = Vector3.zero;
                 break;
@@ -240,5 +268,16 @@ public class CharacterControl : MonoBehaviour
     public void PressedPlay()
 	{
         playingGame = true;
+	}
+
+
+    public void SaveGame()
+	{
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Create(Application.persistentDataPath + "/MySaveData.dat");
+        SaveLoadGame data = new SaveLoadGame();
+        data.currentHighScore = bestTime;
+        bf.Serialize(file, data);
+        file.Close();
 	}
 }

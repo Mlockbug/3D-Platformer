@@ -18,6 +18,13 @@ public class MenuLogic : MonoBehaviour
         
     }
 
+    public void Retry()
+    {
+        DontDestroyOnLoad(this);
+        SceneManager.LoadScene(0);
+        Play();
+        Destroy(gameObject);
+    }
 
     public void Play()
 	{
@@ -28,4 +35,11 @@ public class MenuLogic : MonoBehaviour
 	{
         Application.Quit();
 	}
+
+    public void GoToMenu()
+	{
+        SceneManager.LoadScene(0);
+	}
+
+
 }
