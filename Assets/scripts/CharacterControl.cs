@@ -16,12 +16,12 @@ public class CharacterControl : MonoBehaviour
     float camRotation = 0.0f;
     float rotationSpeed = 2.0f;
     float camRotationSpeed = 1.5f;
-    GameObject cam;
+    public GameObject cam;
     public GameObject camWaypoint;
     public GameObject mazeCam;
     public GameObject mazeCamWaypoint;
     bool wantToRotate = true;
-    Rigidbody rb;
+    public Rigidbody rb;
     Vector3 newVelocity;
     bool isOnGround;
     public GameObject groundChecker;
@@ -37,7 +37,7 @@ public class CharacterControl : MonoBehaviour
     bool parkourCollected = false;
     Vector3 respawnPoint = new Vector3(180f, 133f, 153f);
     public GameObject endDoor;
-    public bool playingGame = false;
+    bool playingGame = true;
     public GameObject mainMenuScreen;
     public GameObject pauseMenuScreen;
     public GameObject winMenuScreen;
@@ -66,8 +66,10 @@ public class CharacterControl : MonoBehaviour
             bestTime = 0f;
 		}
 
-        cam = GameObject.Find("Main Camera");
-        rb = GetComponent<Rigidbody>();
+        //For some reason the save code is breaking these lines, in fact everything else in start breaks
+        //cam = GameObject.Find("Main Camera");
+        //rb = GetComponent<Rigidbody>();
+        
         maxSpeed = normalSpeed;
         sprintTimer = maxSprint;
     }
@@ -252,6 +254,8 @@ public class CharacterControl : MonoBehaviour
                 highScore.text = "Best time: " + bestTime.ToString("F2");
                 Cursor.lockState = CursorLockMode.Confined;
                 newVelocity = Vector3.zero;
+                SaveGame();
+                other.enabled = false;
                 break;
 
         }

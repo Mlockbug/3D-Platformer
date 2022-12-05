@@ -11,12 +11,12 @@ public class MenuLogic : MonoBehaviour
     void Start()
     {
         player = GameObject.Find("player");
-        if (retry)
+        /*if (retry)
         {
             Play();
             retry = false;
             Destroy(gameObject);
-        }
+        }*/
     }
 
     // Update is called once per frame
@@ -27,14 +27,14 @@ public class MenuLogic : MonoBehaviour
 
     public void Retry()
     {
-        DontDestroyOnLoad(this);
-        retry = true;
-        SceneManager.LoadScene(0);
+        //DontDestroyOnLoad(this);
+        //retry = true;
+        SceneManager.LoadScene(1);
     }
 
     public void Play()
 	{
-        player.GetComponent<CharacterControl>().PressedPlay();
+        SceneManager.LoadScene(1);
 	}
 
 	public void Quit()
@@ -47,5 +47,9 @@ public class MenuLogic : MonoBehaviour
         SceneManager.LoadScene(0);
 	}
 
+    public void Resume()
+	{
+        player.GetComponent<CharacterControl>().PressedPlay();
+	}
 
 }
