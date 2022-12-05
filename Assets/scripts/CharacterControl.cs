@@ -205,6 +205,7 @@ public class CharacterControl : MonoBehaviour
                 pauseMenuScreen.SetActive(true);
                 playingGame = false;
                 Cursor.lockState = CursorLockMode.Confined;
+                newVelocity = Vector3.zero;
             }
 
         }
@@ -212,7 +213,7 @@ public class CharacterControl : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-        rb.velocity = new Vector3(newVelocity.x * maxSpeed * Time.fixedDeltaTime, rb.velocity.y, newVelocity.z * maxSpeed * Time.fixedDeltaTime) ;
+        rb.velocity = new Vector3(newVelocity.x * maxSpeed * Time.fixedDeltaTime, rb.velocity.y, newVelocity.z * maxSpeed * Time.fixedDeltaTime);
     }
 
     void OnTriggerEnter(Collider other)
