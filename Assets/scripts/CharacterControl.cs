@@ -52,26 +52,11 @@ public class CharacterControl : MonoBehaviour
     float bestTime;
     void Start()
     {
-        if (File.Exists(Application.persistentDataPath + "/MySaveData.dat"))
-		{
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Application.persistentDataPath + "/MySaveData.dat", FileMode.Open);
-            SaveLoadGame data = (SaveLoadGame)bf.Deserialize(file);
-            file.Close();
-
-            bestTime = data.currentHighScore;
-		}
-        else
-		{
-            bestTime = 0f;
-		}
-
-        //For some reason the save code is breaking these lines, in fact everything else in start breaks
-        //cam = GameObject.Find("Main Camera");
-        //rb = GetComponent<Rigidbody>();
-        
         maxSpeed = normalSpeed;
         sprintTimer = maxSprint;
+
+        LoadGame();
+        //everything after this in start breaks
     }
 
     // Update is called once per frame
@@ -200,7 +185,7 @@ public class CharacterControl : MonoBehaviour
                 endDoor.tag = "deactivated door";
             }
 
-            if (Input.GetKeyDown(KeyCode.P))
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
                 pauseMenuScreen.SetActive(true);
                 playingGame = false;
@@ -250,12 +235,12 @@ public class CharacterControl : MonoBehaviour
                 {
                     newHighScore.gameObject.SetActive(true);
                     bestTime = timer;
+                    SaveGame();
                 }
                 yourScore.text = "Your time: " + timer.ToString("F2");
                 highScore.text = "Best time: " + bestTime.ToString("F2");
                 Cursor.lockState = CursorLockMode.Confined;
                 newVelocity = Vector3.zero;
-                SaveGame();
                 other.enabled = false;
                 break;
 
@@ -278,11 +263,36 @@ public class CharacterControl : MonoBehaviour
 
     public void SaveGame()
 	{
-        BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Application.persistentDataPath + "/MySaveData.dat");
+        BinaryFormatter bf =  new BinaryFormatter();
+        FileStream file = File.Create(Application.persistentDataPath + "/MySaveData.text");
         SaveLoadGame data = new SaveLoadGame();
         data.currentHighScore = bestTime;
         bf.Serialize(file, data);
         file.Close();
 	}
+
+    /*private SaveLoadGame test()
+	{
+        SaveLoadGame save = new SaveLoadGame();
+
+        return save;
+	}*/
+
+    public void LoadGame()
+	{
+        if (File.Exists(Application.persistentDataPath + "/MySaveData.text"))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(Application.persistentDataPath + "/MySaveData.text", FileMode.Open);
+            SaveLoadGame data =bf.Deserialize(file) as SaveLoadGame;
+            file.Close();
+
+            bestTime = data.currentHighScore;
+            Debug.Log(bestTime);
+        }
+        else
+        {
+            bestTime = 0f;
+        }
+    }
 }
